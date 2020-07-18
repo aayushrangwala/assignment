@@ -7,6 +7,7 @@ func NewRouter() *mux.Router {
 
 	router := mux.NewRouter()
 
+	router.Path("/healthz").HandlerFunc(Health)
 	router.PathPrefix("/").HandlerFunc(Reflect)
 
 	return router
