@@ -37,6 +37,30 @@ func TestSimplePath(t *testing.T) {
 	}
 }
 
+func TestHealth(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		req, err := http.NewRequest("GET", "/healthz", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
+		rr := httptest.NewRecorder()
+		handler := http.HandlerFunc(Health)
+
+		// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
+		// directly and pass in our Request and ResponseRecorder.
+
+		handler.ServeHTTP(rr, req)
+
+		t.Logf("response for %s request path is: %s", req.URL.String(), rr.Body.String())
+		// Check the status code is what we expect.
+		if status := rr.Code; status != http.StatusOK {
+			t.Errorf("endpoint failed: Status codes: [Expected: %v], [Returned: %v]", status, http.StatusOK)
+		}
+	}
+}
+
 func generateRandomPath() string {
 	var letterRunes = []rune("/abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	rand.Seed(time.Now().UnixNano())
