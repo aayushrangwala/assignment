@@ -12,8 +12,23 @@ export CGO_ENABLED=0
 # GO111MODULE is the env var used by the mod tool (go.mod file) is useful for enabling the module behaviour
 export GO111MODULE=on
 
+# GOOS is used to build static linked binary for a go program by setting the os
+export GOOS=linux
+
+# GOOS is used to build static linked binary for a go program by setting the Architecture
+export GOARCH=amd64
+
 # Declaring the binary name
 GO_APP_BINARY ?= www
+
+# Declaration for project name
+PROJECT ?= discovergy
+
+# Declaration for the docker image name
+IMAGE ?= www
+
+# Declaring and calculating the version (tag) for the docker image in the format: <data>-<commit>
+VERSION ?= $(shell date +v%Y%m%d)-$(shell git describe --tags --always)
 
 # A Verb with some commands under it is called as target in Makefile.
 # Target is used to run as an argument along with "make" command. It basically runs the commands defined under it
@@ -59,6 +74,18 @@ clean:
 	go clean
 	rm -f $(GO_APP_BINARY) coverage.out
 
+# build target will call the docker build command to build the docker image by giving the dockerfile and current context
+docker-build:
+	docker build -t docker.io/$(PROJECT)/$(IMAGE):$(VERSION) -f Dockerfile .
+
+# push target will push the docker image
+docker-push:
+	docker push docker.io/$(PROJECT)/$(IMAGE):$(VERSION)
+
+# run target will run the docker image
+docker-run:
+	docker run -p 3333:3333 docker.io/$(PROJECT)/$(IMAGE):$(VERSION) --network="host"
+
 # .PHONY is a special built in target which is used to specify the target names explicitely
 # so that it is not conflicted with the file names and also it improves performance
-.PHONY: clean lint test coverage build run
+.PHONY: clean lint test coverage build run build-image push-image
