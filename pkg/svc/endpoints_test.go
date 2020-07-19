@@ -1,4 +1,4 @@
-package main
+package svc
 
 import (
 	"math/rand"
@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"discovergy/internal"
 
 	"github.com/gorilla/mux"
 )
@@ -77,7 +79,7 @@ func TestCeaserCipherEncode(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		out := ceaserCipherEncode(tc.in, tc.shift)
+		out := internal.CeaserCipherEncode(tc.in, tc.shift)
 		t.Logf("Ceaser cipher, Input: [%s], Shift: [%d], Expected: [%s], out: [%s]", tc.in, tc.shift, tc.out, out)
 
 		if out != tc.out {
