@@ -1,4 +1,4 @@
-module github.com/aayushrangwala/discovergy
+module discovergy
 
 go 1.12
 

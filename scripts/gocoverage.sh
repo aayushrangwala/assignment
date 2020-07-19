@@ -5,7 +5,7 @@
 
 set -ex
 
-EXPECTED_COVERAGE="85.0"
+EXPECTED_COVERAGE="75.0"
 COVERAGE_PROFILE="coverage.out"
 
 echo "Running go tool coverage from profile 'coverage.out'..."
