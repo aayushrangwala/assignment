@@ -44,7 +44,25 @@ func Encode(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("Error input params. Required input string which is to be encoded: %+v", vars)
 	}
 
-	result := internal.CeaserCipherEncode(input, internal.EncryptionShift)
+	result := internal.CeaserCipherEncode(input, internal.Shift)
+
+	if err := json.NewEncoder(w).Encode(result); err != nil {
+		log.Fatal("Error encoding or returning the response", err)
+	}
+}
+
+// Decode endpoint will take the input string in the request and perform the decryption using ceaser cipher algorithm
+func Decode(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+
+	input, present := vars["input"]
+	if !present {
+		log.Fatalf("Error input params. Required input string which is to be decoded: %+v", vars)
+	}
+
+	result := internal.CeaserCipherDecode(input, internal.Shift)
 
 	if err := json.NewEncoder(w).Encode(result); err != nil {
 		log.Fatal("Error encoding or returning the response", err)
