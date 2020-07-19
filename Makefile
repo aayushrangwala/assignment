@@ -57,7 +57,7 @@ build: clean fmt vet
 # ,which are created at the time of build
 clean:
 	go clean
-	rm -f $(GO_APP_BINARY)
+	rm -f $(GO_APP_BINARY) coverage.out
 
 # .PHONY is a special built in target which is used to specify the target names explicitely
 # so that it is not conflicted with the file names and also it improves performance
