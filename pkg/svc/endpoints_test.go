@@ -88,6 +88,31 @@ func TestCeaserCipherEncode(t *testing.T) {
 	}
 }
 
+func TestCeaserCipherDecode(t *testing.T) {
+	var testCases = []struct {
+		in, out string
+		shift   int
+	}{
+		{"ol-nk-ngj-gteznotm-iutlojktzogr", "if-he-had-anything-confidential", 32},
+		{"zu-yge", "to-say", 32},
+		{"if-zv-johunpun-aol", "by-so-changing-the", 7},
+		{"xamna-xo-cqn", "order-of-the", 9},
+		{"exmmxkl hy max", "letters of the", 19},
+		{"ximexybq, qexq", "alphabet, that", 23},
+		{"yze-l-hzco-nzfwo", "not-a-word-could", 37},
+		{"mp xlop zfe.", "be made out.", 11},
+	}
+
+	for _, tc := range testCases {
+		out := internal.CeaserCipherDecode(tc.in, tc.shift)
+		t.Logf("Ceaser cipher, Input: [%s], Shift: [%d], Expected: [%s], out: [%s]", tc.in, tc.shift, tc.out, out)
+
+		if out != tc.out {
+			t.Errorf("[FAILED]. expected: %v, returned: %v ", tc.out, out)
+		}
+	}
+}
+
 func TestEncode(t *testing.T) {
 	var testCases = []struct {
 		in, out string
@@ -118,7 +143,46 @@ func TestEncode(t *testing.T) {
 		// directly and pass in our Request and ResponseRecorder.
 		handler.ServeHTTP(rr, req)
 
-		t.Logf("response for %s request path is: %s", req.URL.String(), rr.Body.String())
+		t.Logf("request, Input: [%s], Expected: [%s], out: [%s]", tc.in, tc.out, strings.Trim(rr.Body.String(), "\n"))
+		// Check the status code is what we expect.
+		if status := rr.Code; status != http.StatusOK && rr.Body.String() != tc.out {
+			t.Errorf("endpoint failed: Status codes: [Expected: %v], [Returned: %v], Cipher: [Expected %v], [Returned %v]",
+				status, http.StatusOK, tc.out, rr.Body.String())
+		}
+	}
+}
+
+func TestDecode(t *testing.T) {
+	var testCases = []struct {
+		in, out string
+	}{
+		{"Ol-nk-ngj-gteznotm-iutlojktzogr", "If-he-had-anything-confidential"},
+		{"zu-yge", "to-say"},
+		{"he-yu-ingtmotm-znk", "by-so-changing-the"},
+		{"uxjkx-ul-znk", "order-of-the"},
+		{"rkzzkxy-ul-znk", "letters-of-the"},
+		{"grvnghkz,-zngz", "alphabet,-that"},
+		{"tuz-g-cuxj-iuarj", "not-a-word-could"},
+		{"hk-sgjk-uaz.", "be-made-out."},
+	}
+
+	for _, tc := range testCases {
+		req, err := http.NewRequest(http.MethodGet, "/decode", nil)
+		if err != nil {
+			t.Error(err)
+		}
+
+		req = mux.SetURLVars(req, map[string]string{"input": tc.in})
+
+		// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
+		rr := httptest.NewRecorder()
+		handler := http.HandlerFunc(Decode)
+
+		// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
+		// directly and pass in our Request and ResponseRecorder.
+		handler.ServeHTTP(rr, req)
+
+		t.Logf("request, Input: [%s], Expected: [%s], out: [%s]", tc.in, tc.out, strings.Trim(rr.Body.String(), "\n"))
 		// Check the status code is what we expect.
 		if status := rr.Code; status != http.StatusOK && rr.Body.String() != tc.out {
 			t.Errorf("endpoint failed: Status codes: [Expected: %v], [Returned: %v], Cipher: [Expected %v], [Returned %v]",
