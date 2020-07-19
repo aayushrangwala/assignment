@@ -23,6 +23,7 @@ func NewRouter() *mux.Router {
 			Handler(handler)
 	}
 
-	router.PathPrefix("/").HandlerFunc(svc.Reflect).Methods(http.MethodGet)
+	h := internal.Logger(http.HandlerFunc(svc.Reflect), "Reflector")
+	router.PathPrefix("/").HandlerFunc(h).Methods(http.MethodGet)
 	return router
 }

@@ -30,6 +30,8 @@ IMAGE ?= www
 # Declaring and calculating the version (tag) for the docker image in the format: <data>-<commit>
 VERSION ?= $(shell date +v%Y%m%d)-$(shell git describe --tags --always)
 
+DOCKER_HUB_USER ?= aayushrangwala
+
 # A Verb with some commands under it is called as target in Makefile.
 # Target is used to run as an argument along with "make" command. It basically runs the commands defined under it
 
@@ -60,12 +62,16 @@ test:
 coverage:
 	scripts/gocoverage.sh
 
+# dep target will sync the dependencies in the project
+dep:
+	go mod vendor
+
 # run is the target used to compile and build the program (main.go) by calling the 'build' target and run
 run: build
 	./$(GO_APP_BINARY)
 
 # build target is used to only to compile and build the program (main.go) with running fmt and vet targets also
-build: clean fmt vet
+build: clean fmt vet dep
 	go build -o $(GO_APP_BINARY)
 
 # clean is the target which will clean the object files in the temporary source directory and the binary
@@ -80,14 +86,21 @@ docker-build:
 		-t docker.io/$(PROJECT)/$(IMAGE):latest -f Dockerfile .
 
 # push target will push the docker image
-docker-push:
+docker-push: docker-login
 	docker push docker.io/$(PROJECT)/$(IMAGE):$(VERSION)
 	docker push docker.io/$(PROJECT)/$(IMAGE):latest
 
 # run target will run the docker image
-docker-run:
+docker-run: docker-build
 	docker run -p 3333:3333 docker.io/$(PROJECT)/$(IMAGE):$(VERSION) --network="host"
+
+docker-login:
+	cat creds | docker login -u=$(DOCKER_HUB_USER) --password-stdin
+
+# This target will build and push the code in a commit push which can also be used to create a release
+ci-release: docker-build docker-push
 
 # .PHONY is a special built in target which is used to specify the target names explicitely
 # so that it is not conflicted with the file names and also it improves performance
-.PHONY: clean lint test coverage build run build-image push-image
+.PHONY: clean lint test coverage build run docker-build docker-push docker-run docker-login ci-release
+

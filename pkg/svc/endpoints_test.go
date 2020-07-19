@@ -35,7 +35,7 @@ func TestSimplePath(t *testing.T) {
 		// Check the status code is what we expect.
 		if status := rr.Code; status != http.StatusOK || rr.Body.String() != strings.Trim(randomPath, "/") {
 			t.Errorf("endpoint failed: Status codes: [Expected: %v], [Returned: %v], path: [Expected: %v], [Returned: %v]",
-				status, http.StatusOK, rr.Body.String(), randomPath)
+				status, http.StatusOK, randomPath, rr.Body.String())
 		}
 	}
 }
@@ -58,7 +58,7 @@ func TestHealth(t *testing.T) {
 		t.Logf("response for %s request path is: %s", req.URL.String(), rr.Body.String())
 		// Check the status code is what we expect.
 		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("endpoint failed: Status codes: [Expected: %v], [Returned: %v]", status, http.StatusOK)
+			t.Errorf("endpoint failed: Status codes: [Expected: %v], [Returned: %v]", http.StatusOK, status)
 		}
 	}
 }
@@ -147,7 +147,7 @@ func TestEncode(t *testing.T) {
 		// Check the status code is what we expect.
 		if status := rr.Code; status != http.StatusOK && rr.Body.String() != tc.out {
 			t.Errorf("endpoint failed: Status codes: [Expected: %v], [Returned: %v], Cipher: [Expected %v], [Returned %v]",
-				status, http.StatusOK, tc.out, rr.Body.String())
+				http.StatusOK, status, tc.out, rr.Body.String())
 		}
 	}
 }
@@ -186,13 +186,13 @@ func TestDecode(t *testing.T) {
 		// Check the status code is what we expect.
 		if status := rr.Code; status != http.StatusOK && rr.Body.String() != tc.out {
 			t.Errorf("endpoint failed: Status codes: [Expected: %v], [Returned: %v], Cipher: [Expected %v], [Returned %v]",
-				status, http.StatusOK, tc.out, rr.Body.String())
+				http.StatusOK, status, tc.out, rr.Body.String())
 		}
 	}
 }
 
 func generateRandomPath() string {
-	var letterRunes = []rune("/abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	rand.Seed(time.Now().UnixNano())
 
 	b := make([]rune, 10)

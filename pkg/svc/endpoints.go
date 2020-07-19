@@ -15,21 +15,21 @@ import (
 func Reflect(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
 	_, err := w.Write([]byte(strings.Trim(path, "/")))
 	if err != nil {
 		log.Fatal("Error writing or returning the response", err)
 	}
+	w.WriteHeader(http.StatusOK)
 }
 
 // Health endpoint returns the healthy string if the svc is reachable
 func Health(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
 	_, err := w.Write([]byte("Hi there, I am healthy!!"))
 	if err != nil {
 		log.Fatal("Error encoding or returning the response", err)
 	}
+	w.WriteHeader(http.StatusOK)
 }
 
 // Encode endpoint will take the input string in the request and perform the encryption using ceaser cipher algorithm
@@ -37,7 +37,6 @@ func Health(w http.ResponseWriter, _ *http.Request) {
 func Encode(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
 
 	input, present := vars["input"]
 	if !present {
@@ -49,13 +48,13 @@ func Encode(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(result); err != nil {
 		log.Fatal("Error encoding or returning the response", err)
 	}
+	w.WriteHeader(http.StatusOK)
 }
 
 // Decode endpoint will take the input string in the request and perform the decryption using ceaser cipher algorithm
 func Decode(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
 
 	input, present := vars["input"]
 	if !present {
@@ -67,4 +66,5 @@ func Decode(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(result); err != nil {
 		log.Fatal("Error encoding or returning the response", err)
 	}
+	w.WriteHeader(http.StatusOK)
 }

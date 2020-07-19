@@ -7,8 +7,8 @@ import (
 )
 
 // Logger function is the utility helper function which takes the hendler and its name as input for proper logging format
-func Logger(inner http.Handler, name string) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func Logger(inner http.Handler, name string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
 		inner.ServeHTTP(w, r)
@@ -20,5 +20,5 @@ func Logger(inner http.Handler, name string) http.Handler {
 			name,
 			time.Since(start),
 		)
-	})
+	}
 }
