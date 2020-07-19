@@ -76,11 +76,13 @@ clean:
 
 # build target will call the docker build command to build the docker image by giving the dockerfile and current context
 docker-build:
-	docker build -t docker.io/$(PROJECT)/$(IMAGE):$(VERSION) -f Dockerfile .
+	docker build -t docker.io/$(PROJECT)/$(IMAGE):$(VERSION) \
+		-t docker.io/$(PROJECT)/$(IMAGE):latest -f Dockerfile .
 
 # push target will push the docker image
 docker-push:
 	docker push docker.io/$(PROJECT)/$(IMAGE):$(VERSION)
+	docker push docker.io/$(PROJECT)/$(IMAGE):latest
 
 # run target will run the docker image
 docker-run:

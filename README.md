@@ -4,14 +4,6 @@
 - golanci-lint
 - Postman (To test the endpoints)
 
-## General Instructions
-- Do not start a new task before you finished the one before.
-- Put this project in a Git repository.
-- Each step should be at least one separate commit.
-- Do not commit binaries.
-- Go code should be formatted.
-- When you finished the tasks, push all commits to the gitlab repo created for you.
-
 ## Tasks
 1. Build a go program.
    * Create a `go.mod` file containing `module discovergy`
