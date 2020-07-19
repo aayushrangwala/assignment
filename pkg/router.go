@@ -14,16 +14,13 @@ func NewRouter() *mux.Router {
 	router := mux.NewRouter()
 
 	for _, route := range routes {
-		var handler http.Handler
-
-		handler = route.HandlerFunc
-		handler = internal.Logger(handler, route.Name)
+		handler := internal.Logger(route.HandlerFunc, route.Name)
 
 		router.
 			Path(route.Pattern).
 			Methods(route.Method).
 			Name(route.Name).
-			Handler(route.HandlerFunc)
+			Handler(handler)
 	}
 
 	router.PathPrefix("/").HandlerFunc(svc.Reflect).Methods(http.MethodGet)

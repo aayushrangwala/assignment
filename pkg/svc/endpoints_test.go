@@ -79,7 +79,7 @@ func TestCeaserCipherEncode(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		out := internal.CeaserCipherEncode(tc.in, tc.shift)
+		out := internal.CeaserCipher(tc.in, tc.shift, internal.CeaserCipherEncode)
 		t.Logf("Ceaser cipher, Input: [%s], Shift: [%d], Expected: [%s], out: [%s]", tc.in, tc.shift, tc.out, out)
 
 		if out != tc.out {
@@ -104,7 +104,7 @@ func TestCeaserCipherDecode(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		out := internal.CeaserCipherDecode(tc.in, tc.shift)
+		out := internal.CeaserCipher(tc.in, tc.shift, internal.CeaserCipherDecode)
 		t.Logf("Ceaser cipher, Input: [%s], Shift: [%d], Expected: [%s], out: [%s]", tc.in, tc.shift, tc.out, out)
 
 		if out != tc.out {

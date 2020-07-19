@@ -44,7 +44,7 @@ func Encode(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("Error input params. Required input string which is to be encoded: %+v", vars)
 	}
 
-	result := internal.CeaserCipherEncode(input, internal.Shift)
+	result := internal.CeaserCipher(input, internal.Shift, internal.CeaserCipherEncode)
 
 	if err := json.NewEncoder(w).Encode(result); err != nil {
 		log.Fatal("Error encoding or returning the response", err)
@@ -62,7 +62,7 @@ func Decode(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("Error input params. Required input string which is to be decoded: %+v", vars)
 	}
 
-	result := internal.CeaserCipherDecode(input, internal.Shift)
+	result := internal.CeaserCipher(input, internal.Shift, internal.CeaserCipherDecode)
 
 	if err := json.NewEncoder(w).Encode(result); err != nil {
 		log.Fatal("Error encoding or returning the response", err)
