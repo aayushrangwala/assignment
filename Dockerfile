@@ -8,6 +8,7 @@ WORKDIR /go/src/discovergy
 EXPOSE 3333
 
 # Copy the service code
+COPY api api
 COPY internal internal
 COPY pkg pkg
 COPY vendor vendor

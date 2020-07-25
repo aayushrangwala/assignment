@@ -3,6 +3,7 @@ package pkg
 import (
 	"net/http"
 
+	"discovergy/api"
 	"discovergy/internal"
 	"discovergy/pkg/svc"
 
@@ -13,7 +14,7 @@ import (
 func NewRouter() *mux.Router {
 	router := mux.NewRouter()
 
-	for _, route := range routes {
+	for _, route := range api.Routes {
 		handler := internal.Logger(route.HandlerFunc, route.Name)
 
 		router.
